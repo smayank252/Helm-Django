@@ -1,0 +1,21 @@
+name: Build and push Docker image to ACR
+on:
+  push:
+    branches:
+      - main
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Login to ACR
+        uses: azure/docker-login@v1
+        with:
+          login-server: newhelmtest.azurecr.io
+          username: ${{ secrets.ACR_USERNAME }}
+          password: ${{ secrets.ACR_PASSWORD }}
+      - name: Build Docker image
+        run: docker build -t newhelmtest.azurecr.io/django:latest .
+      - name: Push Docker image
+        run: docker push newhelmtest.azurecr.io/django:latest
